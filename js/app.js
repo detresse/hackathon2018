@@ -9,7 +9,7 @@ function switchButtonColorToWhite() {
 function setMessage(message) {
   $("#call").show();
   $("#messages").hide();
-  $("#messages").html("<span id='alert-message'>Un appel a été effectué è l'établissement le plus proche. Un SMS avec votre position a été transmit aux services d'urgence.");
+  $("#messages").html(message);
 }
 
 function findHelp(message) {
@@ -31,29 +31,29 @@ $("#call").click(function() {
 });
 
 $("#medkit").click(function() {
-  findHelp("<span id='alert-message'>Un appel a été effectué è l'établissement le plus proche. Un SMS avec votre position a été transmit aux services d'urgence.");
+  findHelp("<span id='alert-message'>Un appel a été effectué è l'établissement le plus proche. Un SMS avec votre position a été transmia aux services d'urgence.");
   $("#medkit").css({'color': 'yellow'});
 });
 
 $("#ambulance").click(function() {
-  findHelp("<span id='alert-message'>Un appel a été effectué au service ambulancier le plus proche. Un SMS avec votre position leur a été transmit également.");
+  findHelp("<span id='alert-message'>Un appel a été effectué au service ambulancier le plus proche. Un SMS avec votre position leur a été transmia également.");
   switchButtonColorToWhite();
   $("#ambulance").css({'color': 'yellow'});
 });
 
 $("#life-ring").click(function() {
-  findHelp("<span id='alert-message'>Un appel a été effectué è la garde côtière. Un SMS avec votre position lui a été transmit également.");
+  findHelp("<span id='alert-message'>Un appel a été effectué è la garde côtière. Un SMS avec votre position lui a été transmia également.");
   switchButtonColorToWhite();
   $("#life-ring").css({'color': 'yellow'});
 });
 
 $("#bomb").click(function() {
-  findHelp("<span id='alert-message'>Une alerte à la bombe a été effectué au 911. Un SMS avec votre position lui a été transmit également.");
+  findHelp("<span id='alert-message'>Une alerte à la bombe a été effectué au 911. Un SMS avec votre position lui a été transmia également.");
   $("#bomb").css({'color': 'yellow'});
 });
 
 $("#fire-extinguisher").click(function() {
-  findHelp("<span id='alert-message'>Un appel a été effectué au 911 concernant l'incendie. Un SMS avec votre position lui a été transmit également.");
+  findHelp("<span id='alert-message'>Un appel a été effectué au 911 concernant l'incendie. Un SMS avec votre position lui a été transmia également.");
   $("#fire-extinguisher").css({'color': 'yellow'});
 });
 
@@ -212,7 +212,7 @@ controller.init = (function() {
         console.log("setHighAccuracy = " + controller._setHighAccuracy);
 
         navigator.geolocation.getCurrentPosition(
-          _processGeolocationResult.bind(this)/* use bind() to maintain scope */,
+          _processGeolocationResult.bind(this),
           _html5Error.bind(this),
           {
             maximumAge: controller.maxAgeCurrentPos,
@@ -239,7 +239,6 @@ controller.init = (function() {
 
 
     function _processGeolocationResult(position) {
-
       var html5Lat = position.coords.latitude; 
       var html5Lon = position.coords.longitude; 
       var html5TimeStamp = position.timestamp; 
@@ -257,54 +256,54 @@ controller.init = (function() {
       controller.helper.setZoom(9);
       controller._displayGeocodedLocation(position);
 
-          if (position.coords.latitude != null && position.coords.longitude != null) {
-            if (controller._accuracyDataCSV.length < 50000) {
+      if (position.coords.latitude != null && position.coords.longitude != null) {
+        if (controller._accuracyDataCSV.length < 50000) {
 
-              var newDateDiff = null;
-              var ms = null;
-              var dateNow = new Date();
-              var totalElapsedTime =  _getTimeDifference(new Date(Math.abs(dateNow.getTime() - _dateStart.getTime())));
+          var newDateDiff = null;
+          var ms = null;
+          var dateNow = new Date();
+          var totalElapsedTime =  _getTimeDifference(new Date(Math.abs(dateNow.getTime() - _dateStart.getTime())));
 
-              _previousDate == null ?
-              newDateDiff = new Date(Math.abs(dateNow.getTime() - _dateStart.getTime())) :
-              newDateDiff = new Date(Math.abs(dateNow.getTime() - _previousDate.getTime()));
+          _previousDate == null ?
+          newDateDiff = new Date(Math.abs(dateNow.getTime() - _dateStart.getTime())) :
+          newDateDiff = new Date(Math.abs(dateNow.getTime() - _previousDate.getTime()));
 
-              _previousDate = new Date();
+          _previousDate = new Date();
 
-              var dateResultString = _getTimeDifference(newDateDiff);
+          var dateResultString = _getTimeDifference(newDateDiff);
 
-              controller._accuracyDataCSV = controller._accuracyDataCSV + Date(html5TimeStamp).toLocaleString() +
-              "," + html5Lat +
-              "," + html5Lon +
-              "," + html5Accuracy +
-              "," + controller._setHighAccuracy +
-              "," + html5Altitude +
-              "," + html5Heading +
-              "," + html5Speed +
-              "," + position.coords.altitudeAccuracy +
-              "," + dateResultString +
-              "," + totalElapsedTime +
-              ",\r\n";
+          controller._accuracyDataCSV = controller._accuracyDataCSV + Date(html5TimeStamp).toLocaleString() +
+          "," + html5Lat +
+          "," + html5Lon +
+          "," + html5Accuracy +
+          "," + controller._setHighAccuracy +
+          "," + html5Altitude +
+          "," + html5Heading +
+          "," + html5Speed +
+          "," + position.coords.altitudeAccuracy +
+          "," + dateResultString +
+          "," + totalElapsedTime +
+          ",\r\n";
+        }
+
+        if (html5Lat != 0) {
+            controller._mostRecentLocation =  new esri.geometry.Point(html5Lon,html5Lat);
+            controller._showLocation(html5Lat,html5Lon,controller._mostRecentLocation);
+
+            if (controller._supportsLocalStorage) {
+              localStorage.setItem(controller.localStorageEnum().LAT,html5Lat);
+              localStorage.setItem(controller.localStorageEnum().LON,html5Lon);
+              localStorage.setItem(controller.localStorageEnum().ZOOM_LEVEL,controller.map.getZoom());
             }
-
-            if (html5Lat != 0) {
-                  controller._mostRecentLocation =  new esri.geometry.Point(html5Lon,html5Lat);
-                  controller._showLocation(html5Lat,html5Lon,controller._mostRecentLocation);
-
-                  if (controller._supportsLocalStorage) {
-                    localStorage.setItem(controller.localStorageEnum().LAT,html5Lat);
-                    localStorage.setItem(controller.localStorageEnum().LON,html5Lon);
-                    localStorage.setItem(controller.localStorageEnum().ZOOM_LEVEL,controller.map.getZoom());
-                  }
-                  console.log('false, ' +
-                    localStorage.getItem(controller.localStorageEnum().MAP_WIDTH) + ", " +
-                    localStorage.getItem(controller.localStorageEnum().MAP_HEIGHT) + ", " +
-                    localStorage.getItem(controller.localStorageEnum().ZOOM_LEVEL) + ", " +
-                    this.map.getZoom()
-                    );
-                }
-              }
+            console.log('false, ' +
+              localStorage.getItem(controller.localStorageEnum().MAP_WIDTH) + ", " +
+              localStorage.getItem(controller.localStorageEnum().MAP_HEIGHT) + ", " +
+              localStorage.getItem(controller.localStorageEnum().ZOOM_LEVEL) + ", " +
+              this.map.getZoom()
+              );
             }
+          }
+        }
 
        function _getTimeDifference(/* Date */ date) {;
         var msec = date;
@@ -314,14 +313,11 @@ controller.init = (function() {
         msec -= mm * 1000 * 60;
         var ss = Math.floor(msec / 1000);
         msec -= ss * 1000;
-
         hh = hh < 10 ? "0" + hh : hh;
         mm = mm < 10 ? "0" + mm : mm;
         ss = ss < 10 ? "0" + ss : ss;
         msec = msec < 10 ? "0" + msec : msec;
-
         console.log("time: " + hh + ":" + mm + ":" + ss + ":" + msec);
-
         return hh + ":" + mm + ":" + ss + ":" + msec;
       }
 
@@ -337,17 +333,15 @@ controller.init = (function() {
           error_value = "POSITION_UNAVAILABLE";
           break;
           case 3:
+            error_value = "TIMEOUT";
+            break;
+          }
 
-                  error_value = "TIMEOUT";
-                  break;
-                }
-
-                controller.useAlerts == true ?
-                alert('There was a problem retrieving your location: ' + error_value) :
-                console.log('There was a problem retrieving your location: ' + error_value);
-              }
-
-            }
+          controller.useAlerts == true ?
+          alert('There was a problem retrieving your location: ' + error_value) :
+          console.log('There was a problem retrieving your location: ' + error_value);
+        }
+      }
 
    controller._displayGeocodedLocation = function(position) {
     var altitude = "n/a";
@@ -374,11 +368,10 @@ controller.init = (function() {
       var locatorSymbol = null;
 
       if (window.devicePixelRatio >= 2) {
-  locatorSymbol = controller._locatorMarkerLarge;
-}
-else {
-  locatorSymbol = controller._locatorMarkerSmall;
-}
+        locatorSymbol = controller._locatorMarkerLarge;
+      } else {
+        locatorSymbol = controller._locatorMarkerSmall;
+      }
 
       controller.map.graphics.clear();
       controller.map.graphics.add(new esri.Graphic(geometry, controller.markerSymbol));
@@ -421,48 +414,42 @@ else {
         value != "undefined" ? timeout = value : timeout = 500;
         setTimeout((function() {
           if (controller.map != null && controller._mostRecentLocation != null) {
+            if (controller.map.height == 0 || controller.map.width == 0) {
+              if (useLocalStore == false) {
+                if (controller._orientation == controller.localStorageEnum().PORTRAIT) {
+                  controller.map.width = localStorage.getItem(controller.localStorageEnum().MAP_WIDTH);
+                  controller.map.height = localStorage.getItem(controller.localStorageEnum().MAP_HEIGHT);
+                } else {
+                  controller.map.width = localStorage.getItem(controller.localStorageEnum().MAP_HEIGHT);
+                  controller.map.height = localStorage.getItem(controller.localStorageEnum().MAP_WIDTH);
+                }
 
-                      if (controller.map.height == 0 || controller.map.width == 0) {
-                        if (useLocalStore == false) {
-                          if (controller._orientation == controller.localStorageEnum().PORTRAIT)
-                          {
-                            controller.map.width = localStorage.getItem(controller.localStorageEnum().MAP_WIDTH);
-                            controller.map.height = localStorage.getItem(controller.localStorageEnum().MAP_HEIGHT);
-                          }
-                          else {
-                            controller.map.width = localStorage.getItem(controller.localStorageEnum().MAP_HEIGHT);
-                            controller.map.height = localStorage.getItem(controller.localStorageEnum().MAP_WIDTH);
-                          }
+                controller.map.resize();
+                controller.map.reposition();
+                  var wgsPt = new esri.geometry.Point(
+                    localStorage.getItem(controller.localStorageEnum().LON),
+                    localStorage.getItem(controller.localStorageEnum().LAT), new esri.SpatialReference({ wkid: 4326 }))
 
-                          controller.map.resize();
-                          controller.map.reposition();
-  
+                  controller.map.centerAndZoom(
+                    esri.geometry.geographicToWebMercator(wgsPt),
+                    localStorage.getItem(controller.localStorageEnum().ZOOM_LEVEL));
+                  }
+                }
+                else {
+                  controller.map.resize();
+                  controller.map.reposition();
 
-                              var wgsPt = new esri.geometry.Point(
-                                localStorage.getItem(controller.localStorageEnum().LON),
-                                localStorage.getItem(controller.localStorageEnum().LAT), new esri.SpatialReference({ wkid: 4326 }))
+                  if (useLocalStore == false) {
+                    var wgsPt = new esri.geometry.Point(
+                      localStorage.getItem(controller.localStorageEnum().LON),
+                      localStorage.getItem(controller.localStorageEnum().LAT)
+                      );
+                    controller.map.centerAndZoom(esri.geometry.geographicToWebMercator(wgsPt), controller.zoomLevel);
+                  }
+                }
+              }
 
-                              controller.map.centerAndZoom(
-                                esri.geometry.geographicToWebMercator(wgsPt),
-                                localStorage.getItem(controller.localStorageEnum().ZOOM_LEVEL)
-                                );
-                            }
-                          }
-                          else {
-                            controller.map.resize();
-                            controller.map.reposition();
-
-                            if (useLocalStore == false) {
-                              var wgsPt = new esri.geometry.Point(
-                                localStorage.getItem(controller.localStorageEnum().LON),
-                                localStorage.getItem(controller.localStorageEnum().LAT)
-                                );
-                              controller.map.centerAndZoom(esri.geometry.geographicToWebMercator(wgsPt), controller.zoomLevel);
-                            }
-                          }
-                        }
-
-                      }).bind(this),timeout);
+            }).bind(this),timeout);
       }
     }
     catch(err) {
