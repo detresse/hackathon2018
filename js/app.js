@@ -2,10 +2,66 @@ $('document').ready(function() {
   $("#slider-geo-on-off").on("slidestop",controller.shutOffGeolocation);
   $("#slider-high-accuracy").on("slidestop",controller.toggleHighAccuracy);
   $("#slider-accumulate-pts").on("slidestop",controller.toggleAccumulate);
-  $("#slider-handle-err").on("slidestop",controller.toggleErrorAlerts)
+  $("#slider-handle-err").on("slidestop",controller.toggleErrorAlerts);
+  $("#messages").hide();
 })
 
-$('document').ready( function() {controller.deviceReady = true});
+$("#call").click(function() {
+  $("#messages").show();
+});
+
+
+$("#medkit").click(function() {
+  $("#messages").hide();
+  $("#messages").html("<span id='alert-message'>Un appel a été effectué è l'établissement le plus proche. Un SMS avec votre position a été transmit aux services d'urgence.");
+  $("#ambulance").css({'color': 'white'});
+  $("#life-ring").css({'color': 'white'});
+  $("#fire-extinguisher").css({'color': 'white'});
+  $("#bomb").css({'color': 'white'});
+  $("#medkit").css({'color': 'yellow'});
+});
+
+$("#ambulance").click(function() {
+  $("#messages").hide();
+  $("#messages").html("<span id='alert-message'>Un appel a été effectué au service ambulancier le plus proche. Un SMS avec votre position leur a été transmit également.");
+  $("#life-ring").css({'color': 'white'});
+  $("#fire-extinguisher").css({'color': 'white'});
+  $("#bomb").css({'color': 'white'});
+  $("#medkit").css({'color': 'white'});
+  $("#ambulance").css({'color': 'yellow'});
+});
+
+$("#life-ring").click(function() {
+  $("#messages").hide();
+  $("#messages").html("<span id='alert-message'>Un appel a été effectué è la garde côtière. Un SMS avec votre position lui a été transmit également.");
+  $("#fire-extinguisher").css({'color': 'white'});
+  $("#bomb").css({'color': 'white'});
+  $("#medkit").css({'color': 'white'});
+  $("#ambulance").css({'color': 'white'});
+  $("#life-ring").css({'color': 'yellow'});
+});
+
+$("#bomb").click(function() {
+  $("#messages").hide();
+  $("#messages").html("<span id='alert-message'>Une alerte à la bombe a été effectué au 911. Un SMS avec votre position lui a été transmit également.");
+  $("#fire-extinguisher").css({'color': 'white'});
+  $("#medkit").css({'color': 'white'});
+  $("#ambulance").css({'color': 'white'});
+  $("#life-ring").css({'color': 'white'});
+  $("#bomb").css({'color': 'yellow'});
+});
+
+$("#fire-extinguisher").click(function() {
+  $("#messages").hide();
+  $("#messages").html("<span id='alert-message'>Un appel a été effectué au 911 concernant l'incendie. Un SMS avec votre position lui a été transmit également.");
+  $("#medkit").css({'color': 'white'});
+  $("#ambulance").css({'color': 'white'});
+  $("#life-ring").css({'color': 'white'});
+  $("#bomb").css({'color': 'white'});
+  $("#fire-extinguisher").css({'color': 'yellow'});
+});
+
+$('document').ready( function() { controller.deviceReady = true });
 var controller = controller || {};
 
 controller.map = null;
